@@ -142,7 +142,7 @@ Parameters:
     Description: >-
       URL to a pre-built cromwell-*.jar file.  Example: https://mycicdserver.com/build/cromwell-XX-SNAP.jar.
       If this is specifed, CromwellVersion is ignored.
-    Default: "https://github.com/henriqueribeiro/cromwell/releases/download/78-AWS/cromwell-78-AWS.jar"
+    Default: "https://github.com/colingarvey/cromwell/releases/download/83.1-AWS-Roche/cromwell-83.1-AWS-Roche.jar"
   
   DBSubnetIDs:
     Type: List<AWS::EC2::Subnet::Id>
