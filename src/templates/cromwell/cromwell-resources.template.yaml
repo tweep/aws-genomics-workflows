@@ -512,12 +512,21 @@ Resources:
                     }
                   }
 
+
                   system {
                     job-rate-control {
                       jobs = 1
                       per = 2 second
                     }
+                    io {
+                      memory-retry-error-keys = ["OutOfMemory","Killed"]
+                    }
+                    workflow-heartbeats { 
+                      ttl = 30 minutes
+                      write-failure-shutdown-duration = 20 minutes
+                    }
                   }
+
 
                   aws {
                     application-name = "cromwell"
