@@ -102,6 +102,7 @@ Parameters:
     - t3.large
     - t3.xlarge
     - t3.2xlarge
+    - m6i.4xlarge
     ConstraintDescription: "Must be 't3' instance type."
   
   VpcId:
