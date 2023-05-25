@@ -1,5 +1,0 @@
-
-GWDI Setup
-==
-
-

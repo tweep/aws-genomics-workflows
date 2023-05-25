@@ -1,0 +1,69 @@
+[ 
+  {
+    "ParameterKey": "Namespace",
+    "ParameterValue": "test-jhv"
+  },
+  {
+    "ParameterKey": "VpcId",
+    "ParameterValue": "vpc-0ce48aa675d3cb32f"
+  },
+  {
+    "ParameterKey": "NumberOfSubnets",
+    "ParameterValue": "2"
+  },
+    "ParameterKey": "SubnetIds",
+    "ParameterValue": "subnet-04b369314b38f50d4,subnet-0a1cc6ae3f06fc139"
+  },
+  {
+    "ParameterKey": "ArtifactBucketName",
+    "ParameterValue": "gwfcore-congee-prd"
+  },
+  {
+    "ParameterKey": "ArtifactBucketPrefix",
+    "ParameterValue": "test/artifacts"
+  },
+  {
+    "ParameterKey": "S3BucketName",
+    "ParameterValue": "gwfcore-congee-prd"
+  },
+  {
+    "ParameterKey": "TemplateRootUrl",
+    "ParameterValue": "https://gwfcore-congee-prd.s3.us-west-2.amazonaws.com/test/templates"
+  },
+  {
+    "ParameterKey": "BatchComputeInstanceTypes",
+    "ParameterValue": "c5d.*,m5d.*,r5d.*"
+  },
+  {
+    "ParameterKey": "CreateEFS",
+    "ParameterValue": "No"
+  },
+  {
+    "ParameterKey": "CreateFSx",
+    "ParameterValue": "No"
+  },
+  {
+    "ParameterKey": "DefaultCEMaxvCpus",
+    "ParameterValue": "10000"
+  },
+  {
+    "ParameterKey": "PriorityCEMinvCpus",
+    "ParameterValue": "0"
+  },
+  {
+    "ParameterKey": "ExistingBucket",
+    "ParameterValue": "Yes"
+  },
+  {
+    "ParameterKey": "ExistingEFS",
+    "ParameterValue": "fs-087c29f986dc2dc6e"
+  },
+  {
+    "ParameterKey": "ExistingBucket",
+    "ParameterValue": "false"
+  },
+  {
+    "ParameterKey": "pEc2KeyPair",
+    "ParameterValue": "ehive-jhv"
+  }
+]

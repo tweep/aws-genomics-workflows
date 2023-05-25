@@ -38,6 +38,7 @@ Metadata:
           - SSHLocation
           - HTTPLocation
           - EC2RootVolumeSize
+          - pEc2KeyPair
 
       - Label:
           default: "Cromwell Configuration"
@@ -56,6 +57,8 @@ Metadata:
         default: "Server Subnet ID"
       InstanceName:
         default: "Instance Name"
+      pEc2KeyPair:
+        default: "The EC2 key pair for ssh"
       LatestAmazonLinuxAMI:
         default: "Latest Amazon Linux AMI"
       SSHLocation:
@@ -101,9 +104,14 @@ Parameters:
     - t3.medium
     - t3.large
     - t3.xlarge
-    - t3.2xlarge
-    ConstraintDescription: "Must be 't3' instance type."
-  
+    - t3.2xlarge 
+    - c5.2xlarge
+    ConstraintDescription: "Must be 't3' or 'c5' instance type."
+
+  pEc2KeyPair:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: 'The EC2 Keypair' 
+
   VpcId:
     Type: AWS::EC2::VPC::Id
     Description: Recommended to use the Default VPC here
@@ -113,11 +121,13 @@ Parameters:
     Description: Subnet for the Cromwell server. For public access, use a public subnet.
   
   LatestAmazonLinuxAMI:
-    Description: The latest Amazon Linux AMI
+    Description: AWS SSM path to AMI ID of linux image
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
     AllowedValues:
       - /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+      - /cromwell/ami/amazon-linux2
+
   
   CromwellVersion:
     Type: String
@@ -252,6 +262,7 @@ Resources:
     Properties:
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+        - "arn:aws:iam::353631943781:policy/converge-prd-7152-c56"
       Policies:
         - PolicyName: !Sub CromwellServer-BatchQueue-Access-${AWS::Region}
           PolicyDocument:
@@ -879,6 +890,7 @@ Resources:
       ImageId: !Ref LatestAmazonLinuxAMI
       InstanceType: !Ref InstanceType
       IamInstanceProfile: !Ref EC2InstanceProfile
+      KeyName: !Ref 'pEc2KeyPair'
       Tags:
         - Key: Name
           Value: !Sub ${InstanceName}-${Namespace}
