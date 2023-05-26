@@ -986,10 +986,10 @@ Resources:
       EnableHttpEndpoint: true
       DBSubnetGroupName: !Ref DBSubnetGroup
       ScalingConfiguration:
-        AutoPause: true
-        MinCapacity: 1
+        AutoPause: false
+        MinCapacity: 2
         MaxCapacity: 64
-        SecondsUntilAutoPause: 1000
+        SecondsUntilAutoPause: 86400
       StorageEncrypted: true
       VpcSecurityGroupIds: [!GetAtt RDSSecurityGroup.GroupId]
       Tags:
