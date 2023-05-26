@@ -1,0 +1,71 @@
+[ 
+  {
+    "ParameterKey": "CromwellJarUrl",
+    "ParameterValue": "https://github.com/henriqueribeiro/cromwell/releases/download/78-AWS/cromwell-78-AWS.jar"
+  },
+  {
+    "ParameterKey": ":wq
+VpcId",
+    "ParameterValue": "vpc-0ce48aa675d3cb32f" 
+
+  },
+  {
+    "ParameterKey": "Namespace",
+    "ParameterValue": ""
+  },
+    "ParameterKey": "GWFCoreNamespace",
+    "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "InstanceType",
+    "ParameterValue": "t3.2xlarge"
+  },
+  {
+    "ParameterKey": "VpcId",
+    "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "ServerSubnetID",
+    "ParameterValue": "gwfcore-congee-prd"
+  },
+  {
+    "ParameterKey": "LatestAmazonLinuxAMI",
+    "ParameterValue": "/cromwell/ami/amazon-linux2"
+  },
+  {
+    "ParameterKey": "DBSubnetIDs",
+    "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "DBPassword",
+    "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "InstanceName",
+    "ParameterValue": "cromwell-server-uat"
+  },
+  {
+    "ParameterKey": "SSHLocation",
+    "ParameterValue": "10.0.0.0/8"
+  },
+  {
+    "ParameterKey": "HTTPLocation",
+    "ParameterValue": "10.0.0.0/8"
+  },
+  {
+    "ParameterKey": "EC2RootVolumeSize",
+    "ParameterValue": 100
+  },
+  {
+    "ParameterKey": "UseFSx",
+    "ParameterValue": "No"
+  },
+  {
+    "ParameterKey": "ExistingBucket",
+    "ParameterValue": "false"
+  },
+  {
+    "ParameterKey": "pEc2KeyPair",
+    "ParameterValue": "ehive-jhv"
+  }
+]

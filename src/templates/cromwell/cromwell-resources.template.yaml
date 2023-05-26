@@ -38,6 +38,7 @@ Metadata:
           - SSHLocation
           - HTTPLocation
           - EC2RootVolumeSize
+          - pEc2KeyPair
 
       - Label:
           default: "Cromwell Configuration"
@@ -56,6 +57,8 @@ Metadata:
         default: "Server Subnet ID"
       InstanceName:
         default: "Instance Name"
+      pEc2KeyPair:
+        default: "The EC2 key pair for ssh"
       LatestAmazonLinuxAMI:
         default: "Latest Amazon Linux AMI"
       SSHLocation:
@@ -104,7 +107,11 @@ Parameters:
     - t3.2xlarge
     - m6i.4xlarge
     ConstraintDescription: "Must be 't3' instance type."
-  
+
+  pEc2KeyPair:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: 'The EC2 Keypair' 
+
   VpcId:
     Type: AWS::EC2::VPC::Id
     Description: Recommended to use the Default VPC here
@@ -114,7 +121,7 @@ Parameters:
     Description: Subnet for the Cromwell server. For public access, use a public subnet.
   
   LatestAmazonLinuxAMI:
-    Description: The latest Amazon Linux AMI
+    Description: AWS SSM path to AMI ID of linux image
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Default: /cromwell/ami/amazon-linux2
     AllowedValues:
@@ -254,6 +261,7 @@ Resources:
     Properties:
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+        - "arn:aws:iam::353631943781:policy/converge-prd-7152-c56"
       Policies:
         - PolicyName: !Sub CromwellServer-BatchQueue-Access-${AWS::Region}
           PolicyDocument:
@@ -387,7 +395,7 @@ Resources:
         CidrIp:
           Ref: HTTPLocation
       - IpProtocol: tcp
-        FromPort: 8000
+        FromPort: 
         ToPort: 8000
         CidrIp:
           Ref: HTTPLocation
@@ -508,12 +516,21 @@ Resources:
                     }
                   }
 
+
                   system {
                     job-rate-control {
                       jobs = 1
                       per = 2 second
                     }
+                    io {
+                      memory-retry-error-keys = ["OutOfMemory","Killed"]
+                    }
+                    workflow-heartbeats { 
+                      ttl = 30 minutes
+                      write-failure-shutdown-duration = 20 minutes
+                    }
                   }
+
 
                   aws {
                     application-name = "cromwell"
@@ -886,6 +903,7 @@ Resources:
       ImageId: !Ref LatestAmazonLinuxAMI
       InstanceType: !Ref InstanceType
       IamInstanceProfile: !Ref EC2InstanceProfile
+      KeyName: !Ref 'pEc2KeyPair'
       Tags:
         - Key: Name
           Value: !Sub ${InstanceName}-${Namespace}
@@ -972,10 +990,10 @@ Resources:
       EnableHttpEndpoint: true
       DBSubnetGroupName: !Ref DBSubnetGroup
       ScalingConfiguration:
-        AutoPause: true
-        MinCapacity: 1
+        AutoPause: false
+        MinCapacity: 2
         MaxCapacity: 64
-        SecondsUntilAutoPause: 1000
+        SecondsUntilAutoPause: 86400
       StorageEncrypted: true
       VpcSecurityGroupIds: [!GetAtt RDSSecurityGroup.GroupId]
       Tags:
