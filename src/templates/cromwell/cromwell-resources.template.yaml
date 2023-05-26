@@ -104,9 +104,9 @@ Parameters:
     - t3.medium
     - t3.large
     - t3.xlarge
-    - t3.2xlarge 
-    - c5.2xlarge
-    ConstraintDescription: "Must be 't3' or 'c5' instance type."
+    - t3.2xlarge
+    - m6i.4xlarge
+    ConstraintDescription: "Must be 't3' instance type."
 
   pEc2KeyPair:
     Type: AWS::EC2::KeyPair::KeyName
@@ -123,11 +123,10 @@ Parameters:
   LatestAmazonLinuxAMI:
     Description: AWS SSM path to AMI ID of linux image
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
-    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+    Default: /cromwell/ami/amazon-linux2
     AllowedValues:
       - /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
       - /cromwell/ami/amazon-linux2
-
   
   CromwellVersion:
     Type: String
@@ -151,7 +150,7 @@ Parameters:
     Description: >-
       URL to a pre-built cromwell-*.jar file.  Example: https://mycicdserver.com/build/cromwell-XX-SNAP.jar.
       If this is specifed, CromwellVersion is ignored.
-    Default: "https://github.com/henriqueribeiro/cromwell/releases/download/78-AWS/cromwell-78-AWS.jar"
+    Default: "https://github.com/colingarvey/cromwell/releases/download/83.1-AWS-Roche/cromwell-83.1-AWS-Roche.jar"
   
   DBSubnetIDs:
     Type: List<AWS::EC2::Subnet::Id>
@@ -190,7 +189,7 @@ Parameters:
     Type: String
     MinLength: '9'
     MaxLength: '18'
-    Default: 0.0.0.0/0
+    Default: 10.0.0.0/8
     AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
     ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
   
@@ -201,7 +200,7 @@ Parameters:
     Type: String
     MinLength: '9'
     MaxLength: '18'
-    Default: 0.0.0.0/0
+    Default: 10.0.0.0/8
     AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
     ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
 
@@ -393,6 +392,11 @@ Resources:
       - IpProtocol: tcp
         FromPort: 443
         ToPort: 443
+        CidrIp:
+          Ref: HTTPLocation
+      - IpProtocol: tcp
+        FromPort: 
+        ToPort: 8000
         CidrIp:
           Ref: HTTPLocation
 
@@ -933,7 +937,7 @@ Resources:
           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource EC2Instance --region ${AWS::Region}
       
       NetworkInterfaces:
-        - AssociatePublicIpAddress: true
+        - AssociatePublicIpAddress: false
           DeviceIndex: "0"
           GroupSet:
             - !Ref EC2SecurityGroup
