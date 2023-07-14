@@ -10,17 +10,30 @@ We got to create two stacks:
 - a stack with nested stacks 
 
 
+Prereqs
+==
+``` 
+ aws-azure-login --mode=gui
+ ❯ arn:aws:iam::353631943781:role/ROLE-GRED-CONGEE-GWDI-01-SB-AWSPWUSR
+``` 
+
 Create nested stacks
 ==
-```
-export STACK_NAME=uat
+``` 
+aws-azure login 
+
+export STACK_NAME=jhv
+
+cd aws-genomics-workflows/  
+
+export TEMPLATE_ROOT_URL=./src/templates/
 
 aws cloudformation create-stack \
     --region us-west-2 \
     --stack-name $STACK_NAME \
     --template-url $TEMPLATE_ROOT_URL/gwfcore/gwfcore-root.template.yaml \
     --capabilities CAPABILITY_IAM CAPABILITY_AUTO_EXPAND \
-    --parameters file://gwdi.parameters.uat.json 
+    --parameters file://cfn/gwdi.parameters.uat.json 
 
         ParameterKey=VpcId,ParameterValue=<vpc-id> \
         ParameterKey=SubnetIds,ParameterValue=\"<subnet-id-1>,<subnet-id-2>,...\" \
