@@ -1,0 +1,98 @@
+[
+  {
+    "ParameterKey": "ExistingEFS",
+    "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "ArtifactBucketName",
+    "ParameterValue": "gwfcore-congee-dev"
+  },
+  {
+    "ParameterKey": "FSxBucketName",
+    "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "PriorityCEMinvCpus",
+    "ParameterValue": "0"
+  },
+  {
+    "ParameterKey": "CreateEFS",
+    "ParameterValue": "No"
+  },
+  {
+    "ParameterKey": "SubnetIds",
+    "ParameterValue": "subnet-04b369314b38f50d4,subnet-0a1cc6ae3f06fc139"
+  },
+  {
+    "ParameterKey": "Namespace",
+    "ParameterValue": "gwfcore-congee-dev"
+  },
+  {
+    "ParameterKey": "DefaultCEMinvCpus",
+    "ParameterValue": "0"
+  },
+  {
+    "ParameterKey": "FSxPerUnitStorageThroughput",
+    "ParameterValue": "0"
+  },
+  {
+    "ParameterKey": "FSxStorageType",
+    "ParameterValue": "SCRATCH"
+  },
+  {
+    "ParameterKey": "PriorityCEMaxvCpus",
+    "ParameterValue": "100"
+  },
+  {
+    "ParameterKey": "ExistingBucket",
+    "ParameterValue": "Yes"
+  },
+  {
+    "ParameterKey": "CreateFSx",
+    "ParameterValue": "No"
+  },
+  {
+    "ParameterKey": "VpcId",
+    "ParameterValue": "vpc-0ce48aa675d3cb32f"
+  },
+  {
+    "ParameterKey": "ArtifactBucketPrefix",
+    "ParameterValue": "test/artifacts"
+  },
+  {
+    "ParameterKey": "TemplateRootUrl",
+    "ParameterValue": "https://gwfcore-congee-dev.s3.us-west-2.amazonaws.com/test/templates"
+  },
+  {
+    "ParameterKey": "BatchSpotBidPercentage",
+    "ParameterValue": "100"
+  },
+  {
+    "ParameterKey": "FSxStorageVolumeSize",
+    "ParameterValue": "0"
+  },
+  {
+    "ParameterKey": "BatchComputeInstanceTypes",
+    "ParameterValue": "c4.large,m4.large,r4.large,c4.xlarge,m4.xlarge,r4.xlarge,c4.2xlarge,m4.2xlarge,r4.2xlarge,c4.4xlarge,m4.4xlarge,r4.4xlarge,c5.large,m5.large,r5.large,c5.xlarge,m5.xlarge,r5.xlarge,c5.2xlarge,m5.2xlarge,r5.2xlarge,c5.4xlarge,m5.4xlarge,r5.4xlarge"
+  },
+  {
+    "ParameterKey": "BatchComputeGPUInstanceTypes",
+    "ParameterValue": "p3.2xlarge,p3.8xlarge,p3.16xlarge"
+  },
+  {
+    "ParameterKey": "NumberOfSubnets",
+    "ParameterValue": "2"
+  },
+  {
+    "ParameterKey": "S3BucketName",
+    "ParameterValue": "gwfcore-congee-dev"
+  },
+  {
+    "ParameterKey": "DefaultCEMaxvCpus",
+    "ParameterValue": "100"
+  },
+  {
+    "ParameterKey": "FSxSubnetId",
+    "ParameterValue": "No"
+  }
+]

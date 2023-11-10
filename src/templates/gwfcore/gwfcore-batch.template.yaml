@@ -25,7 +25,7 @@ Metadata:
         - FSxSubnetId
         - BatchSpotBidPercentage
         - BatchComputeInstanceTypes
-        - BatchGPUComputeInstanceTypes
+        - BatchComputeGPUInstanceTypes
     ParameterLabels:
       LaunchTemplateId:
         default: Launch Template ID
@@ -53,7 +53,7 @@ Metadata:
         default: The % of the On-demand EC2 price the SPOT instances should be bid at.
       BatchComputeInstanceTypes:
         default: The list of instance types to be used for EC2 instances using Batch Compute Environments.
-      BatchGPUComputeInstanceTypes:
+      BatchComputeGPUInstanceTypes:
         default: The list of instance types to be used for EC2 GPU instances using Batch Compute Environments.
 
 Parameters:
@@ -109,6 +109,9 @@ Parameters:
   BatchComputeInstanceTypes:
     Type: String
     Description: The list of instance types to be used for EC2 instances using Batch Compute Environments.
+  BatchComputeGPUInstanceTypes:
+    Type: String
+    Description: The list of GPU instance types to be used for EC2 instances using Batch Compute Environments.
 
 Mappings:
   TagMap:
@@ -166,6 +169,7 @@ Resources:
       ComputeResources:
         Ec2Configuration:
           - ImageType: ECS_AL2
+        ImageId: ami-022fa15b15c6ddaf4
         AllocationStrategy: SPOT_CAPACITY_OPTIMIZED
         # Set the Spot price to 100% of on-demand price
         # This is the maximum price for spot instances that Batch will launch.
@@ -199,7 +203,7 @@ Resources:
       ComputeResources:
         Ec2Configuration:
           - ImageType: ECS_AL2
-          - ImageId: ami-01378ef312ecfc408
+        ImageId: ami-01378ef312ecfc408
         AllocationStrategy: SPOT_CAPACITY_OPTIMIZED
         # Set the Spot price to 100% of on-demand price
         # This is the maximum price for spot instances that Batch will launch.
@@ -211,7 +215,7 @@ Resources:
           LaunchTemplateId: !Ref LaunchTemplateId
           Version: $Latest
         InstanceRole: !Ref Ec2InstanceProfileArn
-        InstanceTypes: !Split [",", !Ref BatchGPUComputeInstanceTypes ]
+        InstanceTypes: !Split [",", !Ref BatchComputeGPUInstanceTypes ]
         MinvCpus: !Ref DefaultCEMinvCpus
         MaxvCpus: !Ref DefaultCEMaxvCpus
         SecurityGroupIds:
@@ -233,13 +237,13 @@ Resources:
       ComputeResources:
         Ec2Configuration:
           - ImageType: ECS_AL2
-          - ImageId: ami-01378ef312ecfc408
+        ImageId: ami-022fa15b15c6ddaf4
         AllocationStrategy: BEST_FIT
         LaunchTemplate:
           LaunchTemplateId: !Ref LaunchTemplateId
           Version: $Latest
         InstanceRole:  !Ref Ec2InstanceProfileArn
-        InstanceTypes: !Split [",", !Ref BatchGPUComputeInstanceTypes ]
+        InstanceTypes: !Split [",", !Ref BatchComputeInstanceTypes ]
         MinvCpus: !Ref PriorityCEMinvCpus
         MaxvCpus: !Ref PriorityCEMaxvCpus
         SecurityGroupIds:
@@ -250,7 +254,7 @@ Resources:
           Name: !Sub batch-worker-ondemand-${Namespace}
           architecture: !FindInMap ["TagMap", "default", "architecture"]
 
-   OnDemandGPUComputeEnv:
+  OnDemandGPUComputeEnv:
     Type: AWS::Batch::ComputeEnvironment
     Properties:
       ComputeEnvironmentName: !Sub ondemand-gpu-${Namespace}
@@ -260,12 +264,13 @@ Resources:
       ComputeResources:
         Ec2Configuration:
           - ImageType: ECS_AL2
+        ImageId: ami-01378ef312ecfc408
         AllocationStrategy: BEST_FIT
         LaunchTemplate:
           LaunchTemplateId: !Ref LaunchTemplateId
           Version: $Latest
         InstanceRole:  !Ref Ec2InstanceProfileArn
-        InstanceTypes: !Split [",", !Ref BatchComputeInstanceTypes ]
+        InstanceTypes: !Split [",", !Ref BatchComputeGPUInstanceTypes ]
         MinvCpus: !Ref PriorityCEMinvCpus
         MaxvCpus: !Ref PriorityCEMaxvCpus
         SecurityGroupIds:

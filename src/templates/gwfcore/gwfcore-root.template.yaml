@@ -32,6 +32,7 @@ Metadata:
           - FSxStorageType
           - BatchSpotBidPercentage
           - BatchComputeInstanceTypes
+          - BatchComputeGPUInstanceTypes
       - Label:
           default: Distribution Configuration
         Parameters:
@@ -84,7 +85,9 @@ Metadata:
         default: The maximum percentage that an EC2 Spot Instance price can be when compared with the On-Demand price for that instance type before instances are launched.
       BatchComputeInstanceTypes:
         default: The list of instance types to be used for EC2 instances using Batch Compute Environments.
-
+      BatchComputeGPUInstanceTypes:
+        default: The list of instance types to be used for EC2 instances using Batch Compute Environments with GPU.
+    
 Parameters:
   Namespace:
     Type: String
@@ -214,7 +217,14 @@ Parameters:
       If you have tooling that requires more compute resources, you can add larger (e.g. *.8xlarge and up) instance types.
       If you have workflows that read large amounts of data, but otherwise have modest compute resource needs, you can add "n" instances (e.g. c5n, m5n, r5n) - note check availability in your region.
     Default: "c4.large,m4.large,r4.large,c4.xlarge,m4.xlarge,r4.xlarge,c4.2xlarge,m4.2xlarge,r4.2xlarge,c4.4xlarge,m4.4xlarge,r4.4xlarge,c5.large,m5.large,r5.large,c5.xlarge,m5.xlarge,r5.xlarge,c5.2xlarge,m5.2xlarge,r5.2xlarge,c5.4xlarge,m5.4xlarge,r5.4xlarge"
-
+  BatchComputeGPUInstanceTypes:
+    Type: String
+    Description: >-
+      The list of instance types to be used for EC2 GPU instances using Batch Compute Environments.
+      This list works for jobs that requires GPUs.
+      If you have tooling that requires more compute resources, you can add larger (e.g. *.8xlarge and up) instance types.
+      If you have workflows that read large amounts of data, but otherwise have modest compute resource needs, you can add "n" instances (e.g. c5n, m5n, r5n) - note check availability in your region.
+    Default: "p3.2xlarge,p3.8xlarge,p3.16xlarge"
 Conditions:
   NoNamespace: !Equals [ !Ref Namespace, "" ]
   EfsCondition: !Equals [ !Ref CreateEFS, "Yes"]
@@ -330,6 +340,7 @@ Resources:
         FSxSubnetId: !Ref FSxSubnetId
         BatchSpotBidPercentage: !Ref BatchSpotBidPercentage
         BatchComputeInstanceTypes: !Ref BatchComputeInstanceTypes
+        BatchComputeGPUInstanceTypes: !Ref BatchComputeGPUInstanceTypes
 
   FSxSGIngressTCP:
     Condition: FsxCondition
@@ -439,7 +450,7 @@ Resources:
     Properties:
       Name:
         Fn::Sub:
-          - /gwfcore/${namespace}/job-queue/default
+          - /gwfcore/${namespace}/job-queue/default-gpu
           - namespace: 
               Fn::If:
                 - NoNamespace
@@ -454,7 +465,7 @@ Resources:
     Properties:
       Name:
         Fn::Sub:
-          - /gwfcore/${namespace}/job-queue/priority
+          - /gwfcore/${namespace}/job-queue/priority-gpu
           - namespace: 
               Fn::If:
                 - NoNamespace
