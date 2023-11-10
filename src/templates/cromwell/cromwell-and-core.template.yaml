@@ -319,4 +319,17 @@ Outputs:
     Description: >-
       AWS Batch job queue for high priority workflow jobs, based on EC2 On-Demand
       instances
+  BatchDefaultGPUQueue:
+    Value: !GetAtt 'GenomicsWorkflowStack.Outputs.DefaultGPUJobQueueArn'
+    Export:
+      Name: !Sub "${Namespace}-DefaultGPUJobQueue"
+    Description: >-
+      The default AWS Batch job queue for workflow jobs, based on EC2 SPOT instances
+  BatchPriorityGPUQueue:
+    Value: !GetAtt 'GenomicsWorkflowStack.Outputs.PriorityGPUJobQueueArn'
+    Export:
+      Name: !Sub "${Namespace}-PriorityGPUJobQueue"
+    Description: >-
+      AWS Batch job queue for high priority workflow jobs, based on EC2 On-Demand
+      instances
 ...

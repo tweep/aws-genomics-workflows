@@ -25,6 +25,7 @@ Metadata:
         - FSxSubnetId
         - BatchSpotBidPercentage
         - BatchComputeInstanceTypes
+        - BatchGPUComputeInstanceTypes
     ParameterLabels:
       LaunchTemplateId:
         default: Launch Template ID
@@ -52,6 +53,8 @@ Metadata:
         default: The % of the On-demand EC2 price the SPOT instances should be bid at.
       BatchComputeInstanceTypes:
         default: The list of instance types to be used for EC2 instances using Batch Compute Environments.
+      BatchGPUComputeInstanceTypes:
+        default: The list of instance types to be used for EC2 GPU instances using Batch Compute Environments.
 
 Parameters:
   Namespace:
@@ -186,10 +189,71 @@ Resources:
           Name: !Sub batch-worker-spot-${Namespace}
           architecture: !FindInMap ["TagMap", "default", "architecture"]
 
+  SpotGpuComputeEnv:
+    Type: AWS::Batch::ComputeEnvironment
+    Properties:
+      ComputeEnvironmentName: !Sub spot-gpu-${Namespace}
+      ServiceRole: !Ref BatchServiceRoleArn
+      Type: MANAGED
+      State: ENABLED
+      ComputeResources:
+        Ec2Configuration:
+          - ImageType: ECS_AL2
+          - ImageId: ami-01378ef312ecfc408
+        AllocationStrategy: SPOT_CAPACITY_OPTIMIZED
+        # Set the Spot price to 100% of on-demand price
+        # This is the maximum price for spot instances that Batch will launch.
+        # Lowering this puts a limit on the spot capacity that Batch has available.
+        # Spot instances are terminated when on-demand capacity is needed, regardless of the price set.
+        BidPercentage: !Ref BatchSpotBidPercentage 
+        # Ec2KeyPair: !Ref Ec2KeyPairName
+        LaunchTemplate:
+          LaunchTemplateId: !Ref LaunchTemplateId
+          Version: $Latest
+        InstanceRole: !Ref Ec2InstanceProfileArn
+        InstanceTypes: !Split [",", !Ref BatchGPUComputeInstanceTypes ]
+        MinvCpus: !Ref DefaultCEMinvCpus
+        MaxvCpus: !Ref DefaultCEMaxvCpus
+        SecurityGroupIds:
+          - !Ref SecurityGroup
+        SpotIamFleetRole: !Ref SpotFleetRoleArn
+        Subnets: !If [FsxCondition, !Split [',', !Ref FSxSubnetId], !Ref SubnetIds]
+        Type: SPOT
+        Tags:
+          Name: !Sub batch-worker-spot-${Namespace}
+          architecture: !FindInMap ["TagMap", "default", "architecture"]
+          
   OnDemandComputeEnv:
     Type: AWS::Batch::ComputeEnvironment
     Properties:
       ComputeEnvironmentName: !Sub ondemand-${Namespace}
+      ServiceRole: !Ref BatchServiceRoleArn
+      Type: MANAGED
+      State: ENABLED
+      ComputeResources:
+        Ec2Configuration:
+          - ImageType: ECS_AL2
+          - ImageId: ami-01378ef312ecfc408
+        AllocationStrategy: BEST_FIT
+        LaunchTemplate:
+          LaunchTemplateId: !Ref LaunchTemplateId
+          Version: $Latest
+        InstanceRole:  !Ref Ec2InstanceProfileArn
+        InstanceTypes: !Split [",", !Ref BatchGPUComputeInstanceTypes ]
+        MinvCpus: !Ref PriorityCEMinvCpus
+        MaxvCpus: !Ref PriorityCEMaxvCpus
+        SecurityGroupIds:
+          - !Ref SecurityGroup
+        Subnets: !If [FsxCondition, !Split [',', !Ref FSxSubnetId], !Ref SubnetIds]
+        Type: EC2
+        Tags:
+          Name: !Sub batch-worker-ondemand-${Namespace}
+          architecture: !FindInMap ["TagMap", "default", "architecture"]
+
+   OnDemandGPUComputeEnv:
+    Type: AWS::Batch::ComputeEnvironment
+    Properties:
+      ComputeEnvironmentName: !Sub ondemand-gpu-${Namespace}
       ServiceRole: !Ref BatchServiceRoleArn
       Type: MANAGED
       State: ENABLED
@@ -231,7 +295,27 @@ Resources:
       ComputeEnvironmentOrder:
         - Order: 1
           ComputeEnvironment: !Ref SpotComputeEnv
-        
+
+  DefaultGPUQueue:
+    Type: AWS::Batch::JobQueue
+    Properties:
+      JobQueueName: !Sub default-gpu-${Namespace}
+      Priority: 1
+      State: ENABLED
+      ComputeEnvironmentOrder:
+        - Order: 1
+          ComputeEnvironment: !Ref SpotGpuComputeEnv
+
+  PriorityGPUQueue:
+    Type: AWS::Batch::JobQueue
+    Properties:
+      JobQueueName: !Sub priority-gpu-${Namespace}
+      Priority: 1000
+      State: ENABLED
+      ComputeEnvironmentOrder:
+        - Order: 1
+          ComputeEnvironment: !Ref OnDemandGPUComputeEnv
+
   ContainerInstanceLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -243,6 +327,10 @@ Outputs:
     Value: !Ref DefaultQueue
   PriorityJobQueueArn:
     Value: !Ref PriorityQueue
+  PriorityGPUJobQueueArn:
+    Value: !Ref PriorityGPUQueue
+  DefaultGPUJobQueueArn:
+    Value: !Ref DefaultGPUQueue
   BatchSecurityGroupId:
     Description: The Batch Security Group
     Value: !Ref SecurityGroup

@@ -433,6 +433,37 @@ Resources:
       Value: !Sub ${BatchStack.Outputs.PriorityJobQueueArn} #required
       Description: GWFCore Priority AWS Batch Job Queue
 
+
+  ParamDefaultGPUJobQueue:
+    Type: "AWS::SSM::Parameter"
+    Properties:
+      Name:
+        Fn::Sub:
+          - /gwfcore/${namespace}/job-queue/default
+          - namespace: 
+              Fn::If:
+                - NoNamespace
+                - !Sub ${AWS::StackName}
+                - !Ref Namespace
+      Type: String #required
+      Value: !Sub ${BatchStack.Outputs.DefaultGPUJobQueueArn} #required
+      Description: GWFCore Default AWS Batch GPU Job Queue
+
+  ParamPriorityGPUJobQueue:
+    Type: "AWS::SSM::Parameter"
+    Properties:
+      Name:
+        Fn::Sub:
+          - /gwfcore/${namespace}/job-queue/priority
+          - namespace: 
+              Fn::If:
+                - NoNamespace
+                - !Sub ${AWS::StackName}
+                - !Ref Namespace
+      Type: String #required
+      Value: !Sub ${BatchStack.Outputs.PriorityGPUJobQueueArn} #required
+      Description: GWFCoreU Priority AWS Batch GPU Job Queue
+
   ParamAdditionsRepoName:
     Type: "AWS::SSM::Parameter"
     Properties:
@@ -523,6 +554,10 @@ Outputs:
     Value: !Ref ParamDefaultJobQueue
   ParamPriorityJobQueue:
     Value: !Ref ParamPriorityJobQueue
+  ParamDefaultGPUJobQueue:
+    Value: !Ref ParamDefaultGPUJobQueue
+  ParamPrioritGPUJobQueue:
+    Value: !Ref ParamPriorityGPUJobQueue
   ParamAdditionsRepoName:
     Value: !Ref ParamAdditionsRepoName
   ParamAdditionsRepoCloneUrlHttp:
