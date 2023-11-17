@@ -203,7 +203,7 @@ Resources:
       ComputeResources:
         Ec2Configuration:
           - ImageType: ECS_AL2
-        ImageId: ami-01378ef312ecfc408
+        ImageId: ami-0cdeb768959a7f53d
         AllocationStrategy: SPOT_CAPACITY_OPTIMIZED
         # Set the Spot price to 100% of on-demand price
         # This is the maximum price for spot instances that Batch will launch.
@@ -224,7 +224,7 @@ Resources:
         Subnets: !If [FsxCondition, !Split [',', !Ref FSxSubnetId], !Ref SubnetIds]
         Type: SPOT
         Tags:
-          Name: !Sub batch-worker-spot-${Namespace}
+          Name: !Sub batch-worker-spot-gpu-${Namespace}
           architecture: !FindInMap ["TagMap", "default", "architecture"]
           
   OnDemandComputeEnv:
@@ -264,7 +264,7 @@ Resources:
       ComputeResources:
         Ec2Configuration:
           - ImageType: ECS_AL2
-        ImageId: ami-01378ef312ecfc408
+        ImageId: ami-0cdeb768959a7f53d	
         AllocationStrategy: BEST_FIT
         LaunchTemplate:
           LaunchTemplateId: !Ref LaunchTemplateId
@@ -278,7 +278,7 @@ Resources:
         Subnets: !If [FsxCondition, !Split [',', !Ref FSxSubnetId], !Ref SubnetIds]
         Type: EC2
         Tags:
-          Name: !Sub batch-worker-ondemand-${Namespace}
+          Name: !Sub batch-worker-ondemand-gpu-${Namespace}
           architecture: !FindInMap ["TagMap", "default", "architecture"]
 
   PriorityQueue:
