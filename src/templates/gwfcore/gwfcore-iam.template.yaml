@@ -92,10 +92,15 @@ Resources:
               - Sid: S3BucketAllowAllObjectOps
                 Effect: Allow
                 Resource: 
-                  - !Sub "arn:aws:s3:::${S3BucketName}"
-                  - !Sub "arn:aws:s3:::${S3BucketName}/*"
+                  - "*"
                 Action:
                   - "s3:*"
+                # need to scope down kms permission https://jira.gene.com/jira/browse/GWDI-349
+              - Sid: KmsAccess
+                Effect: Allow
+                Resource: "*"
+                Action:
+                  - "kms:*"
               - Sid: DenyDeleteBucket
                 Effect: Deny
                 Resource: !Sub "arn:aws:s3:::${S3BucketName}"
