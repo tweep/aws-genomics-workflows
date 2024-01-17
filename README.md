@@ -87,6 +87,35 @@ $ conda activate mkdocs
 $ mkdocs build
 ```
 
+## Incremental changes to cloudformation stack.
+
+Depending on the changes, it may not be required for you to delete and re-create the stack each time 
+
+To do incremental updates: 
+1) sync your templates to the template root url
+2) Create a change set and double check that the changes are intended.
+3) Execute change set
+```
+# sync template
+aws s3 sync ./src/templates s3://gwfcore-congee-dev/test/templates/
+
+# create change set
+aws cloudformation create-change-set --stack-name gwfcore-dev  \
+--capabilities CAPABILITY_IAM CAPABILITY_AUTO_EXPAND  \
+--parameters file://parameters/congee.dev.parameters.json \
+--template-url  "${TEMPLATE_ROOT_URL}"gwfcore/gwfcore-root.template.yaml \
+--change-set-name add-batch-queue-nested     --include-nested-stacks
+
+# to view changeset, go to UI (recommeneded or 
+aws cloudformation describe-change-set --change-set-name <changeset_arn>
+
+# to execute change set click execute change set on ui or 
+aws cloudformation execute-change-set --change-set-name <changeset_arn>
+
+```
+
+
+
 ## License Summary
 
 This library is licensed under the MIT-0 License. See the LICENSE file.
