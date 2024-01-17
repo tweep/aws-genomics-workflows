@@ -1,3 +1,7 @@
+# Genentech specific notes 
+
+Please have a look at [Sunrise setup](./cfn/README_SUNRISE.md)
+
 # Genomics Workflows on AWS
 
 [![Build Status](https://travis-ci.com/aws-samples/aws-genomics-workflows.svg?branch=master)](https://travis-ci.com/aws-samples/aws-genomics-workflows)

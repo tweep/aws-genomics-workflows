@@ -225,6 +225,7 @@ Parameters:
       If you have tooling that requires more compute resources, you can add larger (e.g. *.8xlarge and up) instance types.
       If you have workflows that read large amounts of data, but otherwise have modest compute resource needs, you can add "n" instances (e.g. c5n, m5n, r5n) - note check availability in your region.
     Default: "p3.2xlarge,p3.8xlarge,p3.16xlarge"
+
 Conditions:
   NoNamespace: !Equals [ !Ref Namespace, "" ]
   EfsCondition: !Equals [ !Ref CreateEFS, "Yes"]
