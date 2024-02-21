@@ -55,6 +55,11 @@ Metadata:
         default: The list of instance types to be used for EC2 instances using Batch Compute Environments.
       BatchComputeGPUInstanceTypes:
         default: The list of instance types to be used for EC2 GPU instances using Batch Compute Environments.
+      AwsAmiImageID:
+        default: The AMI used for the default, standard compute environment. 
+      AwsGpuAmiImageID:
+        default: The AMI used to support GPU computes.
+   
 
 Parameters:
   Namespace:
@@ -112,6 +117,12 @@ Parameters:
   BatchComputeGPUInstanceTypes:
     Type: String
     Description: The list of GPU instance types to be used for EC2 instances using Batch Compute Environments.
+  AwsAmiImageID:
+    Type: String
+    Description: Enter the AWS AMI ID used for the default, standard compute environment. 
+  AwsGpuAmiImageID:
+    Type: String
+    Description: The AMI used for the default, standard compute environment. 
 
 Mappings:
   TagMap:
@@ -169,7 +180,8 @@ Resources:
       ComputeResources:
         Ec2Configuration:
           - ImageType: ECS_AL2
-        ImageId: ami-022fa15b15c6ddaf4
+        #ImageId: ami-022fa15b15c6ddaf4
+        ImageId: !Ref AwsAmiImageID
         AllocationStrategy: SPOT_CAPACITY_OPTIMIZED
         # Set the Spot price to 100% of on-demand price
         # This is the maximum price for spot instances that Batch will launch.
@@ -203,7 +215,8 @@ Resources:
       ComputeResources:
         Ec2Configuration:
           - ImageType: ECS_AL2
-        ImageId: ami-0cdeb768959a7f53d
+        #ImageId: ami-0cdeb768959a7f53d
+        ImageId: !Ref AwsGpuAmiImageID
         AllocationStrategy: SPOT_CAPACITY_OPTIMIZED
         # Set the Spot price to 100% of on-demand price
         # This is the maximum price for spot instances that Batch will launch.
@@ -237,7 +250,8 @@ Resources:
       ComputeResources:
         Ec2Configuration:
           - ImageType: ECS_AL2
-        ImageId: ami-022fa15b15c6ddaf4
+        #ImageId: ami-022fa15b15c6ddaf4
+        ImageId: !Ref AwsAmiImageID
         AllocationStrategy: BEST_FIT
         LaunchTemplate:
           LaunchTemplateId: !Ref LaunchTemplateId
@@ -264,7 +278,8 @@ Resources:
       ComputeResources:
         Ec2Configuration:
           - ImageType: ECS_AL2
-        ImageId: ami-0cdeb768959a7f53d	
+        #ImageId: ami-0cdeb768959a7f53d	
+        ImageId: !Ref AwsGpuAmiImageID
         AllocationStrategy: BEST_FIT
         LaunchTemplate:
           LaunchTemplateId: !Ref LaunchTemplateId

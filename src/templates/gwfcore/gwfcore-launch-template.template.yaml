@@ -108,6 +108,8 @@ Resources:
               - unzip
               - amazon-cloudwatch-agent
               - lustre-client
+              - nvme-cli
+              - mdadm
 
               write_files:
               - permissions: '0644'
@@ -181,6 +183,21 @@ Resources:
 
               - mkdir -p /opt/aws-cli/bin
               - cp -a $(dirname $(find /usr/local/aws-cli -name 'aws' -type f))/. /opt/aws-cli/bin/
+              
+              # Create RAID for all nvme devices
+              #- mkdir -p /var/lib/docker
+              - mkdir -p /tmp/scratch
+
+              - DEVICES_COUNT=`nvme list | grep NVMe | wc -l `
+              - DEVICES_LIST=`nvme list | grep NVMe  | cut -f 1 -d ' ' | xargs `
+              - mdadm --create --name=raid --verbose /dev/md0 --level=0 --force --raid-devices=$DEVICES_COUNT $DEVICES_LIST
+              - mdadm --wait /dev/md0
+
+              - mkfs.xfs /dev/md0
+              - echo '/dev/md0  /tmp/scratch xfs defaults,nofail 0 2' >> /etc/fstab
+              - mount -a -t xfs defaults,nofail
+              #- chown ec2-user:ec2-user /var/lib/docker
+
 
               # optional EFS mount
               - USEEFS=`aws ssm get-parameter --name /gwfcore/${Namespace}/efs-shared-file-system --query 'Parameter.Value' --output text`

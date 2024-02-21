@@ -14,6 +14,8 @@ Metadata:
           - VpcId
           - SubnetIds
           - NumberOfSubnets
+          - AwsAmiImageID
+          - AwsGpuAmiImageID
       - Label:
           default: Optional
         Parameters:
@@ -87,6 +89,10 @@ Metadata:
         default: The list of instance types to be used for EC2 instances using Batch Compute Environments.
       BatchComputeGPUInstanceTypes:
         default: The list of instance types to be used for EC2 instances using Batch Compute Environments with GPU.
+      AwsAmiImageID:
+        default: The AMI used for the default, standard compute environment.
+      AwsGpuAmiImageID:
+        default: The AMI used to support GPU computes.
     
 Parameters:
   Namespace:
@@ -208,7 +214,16 @@ Parameters:
     Type: Number
     Description: The maximum percentage that an EC2 Spot Instance price can be when compared with the On-Demand price for that instance type before instances are launched.
     Default: 100
-
+  AwsAmiImageID:
+    Type: String
+    Description: The AMI used for the default, standard compute environment.
+    AllowedPattern: "^ami-[a-zA-Z0-9]{17}$"
+    ConstraintDescription: Must be a valid AWS AMI ID within the region in the format 'ami-xxxxxxxxxxxxxxxxx'
+  AwsGpuAmiImageID:
+    Type: String
+    Description: The AMI used to support GPU computes.
+    AllowedPattern: "^ami-[a-zA-Z0-9]{17}$"
+    ConstraintDescription: Must be a valid AWS AMI ID wthin the region in the format 'ami-xxxxxxxxxxxxxxxxx'
   BatchComputeInstanceTypes:
     Type: String
     Description: >-
@@ -342,6 +357,8 @@ Resources:
         BatchSpotBidPercentage: !Ref BatchSpotBidPercentage
         BatchComputeInstanceTypes: !Ref BatchComputeInstanceTypes
         BatchComputeGPUInstanceTypes: !Ref BatchComputeGPUInstanceTypes
+        AwsAmiImageID: !Ref AwsAmiImageID
+        AwsGpuAmiImageID: !Ref AwsGpuAmiImageID
 
   FSxSGIngressTCP:
     Condition: FsxCondition

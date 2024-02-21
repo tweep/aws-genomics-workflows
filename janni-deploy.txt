@@ -1,0 +1,78 @@
+
+
+Deploy all to AWS: 
+== 
+
+aws s3 mb vogelj4-agc 
+
+bash _scripts/deploy.sh --deploy-region us-west-2  --asset-profile default  --asset-bucket s3://vogelj4-agc  test
+
+
+# Setup 
+
+TEMPLATE_ROOT_URL=https://vogelj4-agc.s3-us-west-2.amazonaws.com/test/templates 
+#
+# Launch template : 
+#
+
+aws cloudformation create-stack \
+    --region us-west-2  \
+    --stack-name vogelj4-test  \
+    --template-url $TEMPLATE_ROOT_URL/gwfcore/gwfcore-root.template.yaml \
+    --capabilities CAPABILITY_IAM CAPABILITY_AUTO_EXPAND \
+    --parameters \
+        ParameterKey=VpcId,ParameterValue=vpc-0ce48aa675d3cb32f \
+        ParameterKey=NumberOfSubnets,ParameterValue=1 \
+        ParameterKey=SubnetIds,ParameterValue=\"subnet-0fa31fa0a068b95ad\" \
+        ParameterKey=ArtifactBucketName,ParameterValue=vogelj4-agc \
+        ParameterKey=TemplateRootUrl,ParameterValue=$TEMPLATE_ROOT_URL \
+        ParameterKey=S3BucketName,ParameterValue=vogelj4-agc-store-bucketname \
+        ParameterKey=ExistingBucket,ParameterValue=No
+
+#
+# Launch template with parameter file : 
+#
+
+aws cloudformation create-stack \
+    --region us-west-2  \
+    --stack-name vogelj4-test  \
+    --template-url $TEMPLATE_ROOT_URL/gwfcore/gwfcore-root.template.yaml \
+    --capabilities CAPABILITY_IAM CAPABILITY_AUTO_EXPAND \
+    --parameters file://cfn/gwdi.parameters.uat.json
+
+                     
+#
+# Sync changes of CFN templates to s3 
+#
+
+aws s3 sync ./src/templates s3://vogelj4-agc/test/templates/
+
+#
+#  If you modify other scripts in 'src' , like at src/ebs-autoscale/get-amazon-ebs-autoscale.sh you got to re-run the deploy.sh script to 
+#    - copy them to dist 
+#    - copy them to artifacts on s3 
+#
+
+# Cleanup + sync
+
+aws s3 rm  --recursive s3://vogelj4-agc/
+aws s3 rm  --recursive s3://vogelj4-agc-store-bucketname/
+bash _scripts/deploy.sh --deploy-region us-west-2  --asset-profile default  --asset-bucket s3://vogelj4-agc  test 
+
+export TEMPLATE_ROOT_URL=https://vogelj4-agc.s3-us-west-2.amazonaws.com/test/templates 
+
+aws cloudformation create-stack \
+    --region us-west-2  \
+    --stack-name vogelj4-test  \
+    --template-url $TEMPLATE_ROOT_URL/gwfcore/gwfcore-root.template.yaml \
+    --capabilities CAPABILITY_IAM CAPABILITY_AUTO_EXPAND \
+    --parameters file://cfn/gwdi.parameters.uat.json
+
+
+
+Todo:  
+== 
+  - upgrade EBS to io2 with high troughput and test again.
+  - check if RAID works
+  - add ec2 key pair parameter  : Ec2KeyPairName to root stack, batch stack 
+

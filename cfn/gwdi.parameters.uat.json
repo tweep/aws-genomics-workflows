@@ -1,38 +1,31 @@
 [ 
   {
-    "ParameterKey": "Namespace",
-    "ParameterValue": "test-jhv"
-  },
-  {
     "ParameterKey": "VpcId",
     "ParameterValue": "vpc-0ce48aa675d3cb32f"
   },
   {
     "ParameterKey": "NumberOfSubnets",
-    "ParameterValue": "2"
+    "ParameterValue": "1"
   },
+  {
     "ParameterKey": "SubnetIds",
-    "ParameterValue": "subnet-04b369314b38f50d4,subnet-0a1cc6ae3f06fc139"
+    "ParameterValue": "subnet-0fa31fa0a068b95ad"
   },
   {
     "ParameterKey": "ArtifactBucketName",
-    "ParameterValue": "gwfcore-congee-prd"
-  },
-  {
-    "ParameterKey": "ArtifactBucketPrefix",
-    "ParameterValue": "test/artifacts"
+    "ParameterValue": "vogelj4-agc"
   },
   {
     "ParameterKey": "S3BucketName",
-    "ParameterValue": "gwfcore-congee-prd"
+    "ParameterValue": "vogelj4-agc-store-bucketname"
   },
   {
     "ParameterKey": "TemplateRootUrl",
-    "ParameterValue": "https://gwfcore-congee-prd.s3.us-west-2.amazonaws.com/test/templates"
+    "ParameterValue": "https://vogelj4-agc.s3.us-west-2.amazonaws.com/test/templates"
   },
   {
     "ParameterKey": "BatchComputeInstanceTypes",
-    "ParameterValue": "c5d.*,m5d.*,r5d.*"
+    "ParameterValue": "c5d.9xlarge"
   },
   {
     "ParameterKey": "CreateEFS",
@@ -44,7 +37,7 @@
   },
   {
     "ParameterKey": "DefaultCEMaxvCpus",
-    "ParameterValue": "10000"
+    "ParameterValue": "100"
   },
   {
     "ParameterKey": "PriorityCEMinvCpus",
@@ -55,15 +48,15 @@
     "ParameterValue": "Yes"
   },
   {
-    "ParameterKey": "ExistingEFS",
-    "ParameterValue": "fs-087c29f986dc2dc6e"
-  },
-  {
     "ParameterKey": "ExistingBucket",
-    "ParameterValue": "false"
+    "ParameterValue": "Yes"
   },
   {
-    "ParameterKey": "pEc2KeyPair",
-    "ParameterValue": "ehive-jhv"
+    "ParameterKey": "AwsAmiImageID",
+    "ParameterValue": "ami-060954fab2f97b62c"
+  },
+  {
+    "ParameterKey": "AwsGpuAmiImageID",
+    "ParameterValue": "ami-0cdeb768959a7f53d"
   }
 ]
